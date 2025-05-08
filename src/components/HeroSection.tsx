@@ -3,43 +3,78 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const HeroSection: React.FC = () => {
+  const floatingAnimation = {
+    y: [0, -20, 0],
+    rotate: [-2, 2, -2],
+    transition: {
+      duration: 4,
+      repeat: Infinity,
+      ease: "easeInOut"
+    }
+  };
+
+  const bounceAnimation = {
+    scale: [1, 1.2, 1],
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "easeInOut"
+    }
+  };
+
+  const sparkleAnimation = {
+    scale: [0, 1, 0],
+    opacity: [0, 1, 0],
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "easeInOut"
+    }
+  };
+
   return (
     <section className="py-16 bg-gradient-to-r from-blue-400 to-purple-500 relative overflow-hidden">
-      {/* Animated Shapes */}
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-4 h-4 bg-white rounded-full opacity-20"
+            initial={{ x: Math.random() * 100 + "%", y: "100%" }}
+            animate={{
+              y: ["-100%", "100%"],
+              x: [
+                `${Math.random() * 100}%`,
+                `${Math.random() * 100}%`,
+                `${Math.random() * 100}%`
+              ]
+            }}
+            transition={{
+              duration: Math.random() * 10 + 10,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Floating Shapes */}
       <motion.div 
         className="absolute top-20 left-10 w-20 h-20 bg-yellow-300 rounded-full opacity-70"
-        animate={{
-          y: [0, 30, 0],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{
-          duration: 5,
-          repeat: Infinity,
-          repeatType: "reverse"
-        }}
+        animate={floatingAnimation}
       />
       <motion.div 
         className="absolute bottom-10 right-20 w-16 h-16 bg-green-300 rounded-full opacity-70"
         animate={{
-          y: [0, -20, 0],
-          x: [0, 15, 0],
-        }}
-        transition={{
-          duration: 7,
-          repeat: Infinity,
-          repeatType: "reverse"
+          ...floatingAnimation,
+          transition: { ...floatingAnimation.transition, delay: 1 }
         }}
       />
       <motion.div 
         className="absolute top-40 right-40 w-12 h-12 bg-red-300 rounded-full opacity-70"
         animate={{
-          y: [0, 15, 0],
-          x: [0, -10, 0],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          repeatType: "reverse"
+          ...floatingAnimation,
+          transition: { ...floatingAnimation.transition, delay: 2 }
         }}
       />
       
@@ -52,7 +87,23 @@ const HeroSection: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              Make Learning <span className="text-yellow-300">Fun</span> and <span className="text-green-300">Exciting!</span>
+              Make Learning{' '}
+              <motion.span 
+                className="text-yellow-300"
+                animate={bounceAnimation}
+              >
+                Fun
+              </motion.span>{' '}
+              and{' '}
+              <motion.span 
+                className="text-green-300"
+                animate={{
+                  ...bounceAnimation,
+                  transition: { ...bounceAnimation.transition, delay: 0.5 }
+                }}
+              >
+                Exciting!
+              </motion.span>
             </motion.h1>
             
             <motion.p 
@@ -72,11 +123,25 @@ const HeroSection: React.FC = () => {
             >
               <Link to="/games">
                 <motion.button 
-                  className="bg-yellow-400 hover:bg-yellow-500 text-indigo-900 font-bold py-3 px-8 rounded-full shadow-lg transition-all"
+                  className="relative bg-yellow-400 hover:bg-yellow-500 text-indigo-900 font-bold py-3 px-8 rounded-full shadow-lg transition-all overflow-hidden group"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Start Playing
+                  <span className="relative z-10">Start Playing</span>
+                  {/* Sparkle effects on hover */}
+                  {[...Array(5)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute w-2 h-2 bg-white rounded-full"
+                      style={{
+                        left: `${20 * i}%`,
+                        top: "50%"
+                      }}
+                      initial={{ scale: 0, opacity: 0 }}
+                      whileHover={sparkleAnimation}
+                      transition={{ delay: i * 0.1 }}
+                    />
+                  ))}
                 </motion.button>
               </Link>
               <Link to="/activities">
@@ -98,19 +163,32 @@ const HeroSection: React.FC = () => {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="relative"
             >
-              <img 
+              <motion.img 
                 src="https://images.pexels.com/photos/8535236/pexels-photo-8535236.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
                 alt="Children learning with joy" 
                 className="rounded-xl shadow-2xl"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
               />
               <motion.div
                 className="absolute -bottom-5 -right-5 bg-white p-4 rounded-lg shadow-lg"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.6 }}
+                whileHover={{ scale: 1.1, rotate: 5 }}
               >
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <motion.div 
+                    className="w-3 h-3 bg-green-500 rounded-full"
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [1, 0.7, 1]
+                    }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity
+                    }}
+                  />
                   <p className="font-medium">6+ Fun Games</p>
                 </div>
               </motion.div>
